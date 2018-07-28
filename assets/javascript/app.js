@@ -20,7 +20,7 @@ var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + theme + "&api_key=VDY
             $(".giphy-display").empty();
             for (var i = 0; i < results.length; i++) {
         	
-                var showDiv = $("<div class='float-left'>");
+                var showDiv = $("<div class='ml-1 mr-1 float-left'>");
     
                 var rating = results[i].rating;
                 var defaultAnimatedSrc = results[i].images.fixed_width.url;
@@ -85,9 +85,29 @@ var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + theme + "&api_key=VDY
       }
     }
     
+    function downloadImage(event,fileName) {
+
+      console.log("this: " + event);
+      var url = null;
+      event.preventDefault();
+      
+      if(window.download && url) {   
+         fileName = fileName || url.split('/').pop().split('?')[0];
+         var ajax = new XMLHttpRequest();
+                ajax.open( 'GET', url, true);
+                ajax.responseType = 'blob';
+                ajax.onload= function(e){ 
+              download(e.target.response, fileName, 'application/octet-stream');
+              console.log(e.target.response);
+            };
+                setTimeout(function(){ ajax.send();}, 0); // allows setting custom ajax headers using the return:
+              return ajax;
+      }
+    }
     
     $(document).on("click", ".pausePlay", pausePlayGifs);
       $(document).on("click", ".giphy-btn", displayGiphy);
+      
 
     
       renderButtons();
